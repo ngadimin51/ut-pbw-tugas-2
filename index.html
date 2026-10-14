@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBW - Tugas 2 Tofik Nuryanto</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Kontainer utama dengan gradasi premium dan susunan flex responsif -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-6 gap-8 md:gap-12">
+      
+      <!-- ================= BAGIAN DATA MAHASISWA (SUPER KEREN) ================= -->
+      <div class="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 w-full max-w-2xl text-center shadow-2xl overflow-hidden group">
+        <!-- Efek sorot cahaya di background belakang teks -->
+        <div class="absolute -inset-10 bg-linear-to-r from-indigo-500/10 via-purple-500/10 to-emerald-500/10 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
+        
+        <div class="relative z-10 flex flex-col items-center">
+          <!-- Badge Angkatan / Status Kuliah -->
+          <span class="bg-indigo-500/10 text-indigo-400 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full border border-indigo-500/20 mb-3">
+            🚀 Tugas 2 Perkuliahan
+          </span>
+          
+          <!-- Judul Mata Kuliah -->
+          <h1 class="text-xs md:text-sm font-bold tracking-widest text-gray-400 uppercase mb-2">
+            Pemrograman Berbasis Web
+          </h1>
+          
+          <!-- Nama Mahasiswa dengan Efek Gradasi Menyala -->
+          <div class="text-2xl md:text-4xl font-black tracking-tight bg-linear-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent drop-shadow-sm">
+            Tofik Nuryanto
+          </div>
+          
+          <!-- Garis Pembatas Estetik -->
+          <div class="w-12 h-1 bg-linear-to-r from-indigo-500 to-purple-500 my-4 rounded-full"></div>
+          
+          <!-- Nomor NIM dengan Gaya Tag Kontainer -->
+          <div class="flex items-center gap-2 bg-slate-950/60 border border-slate-800 px-4 py-1.5 rounded-xl">
+            <span class="text-[10px] bg-slate-800 text-gray-400 px-1.5 py-0.5 rounded font-mono font-bold">NIM</span>
+            <span class="text-sm md:text-base font-mono font-bold tracking-wider text-emerald-400">054910821</span>
+          </div>
+        </div>
+      </div>
+      <!-- ======================================================================= -->
+
+      <!-- Kontainer untuk Kartu Menu Navigasi -->
+      <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-2xl">
+        
+        <!-- Card Link ke halaman Stok -->
+        <a href="stok.html" class="relative bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl md:rounded-3xl p-6 md:p-8 w-full transition-all duration-300 hover:-translate-y-2 overflow-hidden group flex flex-col justify-between min-h-[160px]">
+          <div class="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative z-10 text-white">
+            <div class="text-4xl mb-3 transition-transform duration-300 group-hover:scale-110 origin-left">📦</div>
+            <h2 class="text-xl md:text-2xl font-bold mb-1">Stok</h2>
+            <p class="text-white/60 text-xs md:text-sm leading-relaxed">Manajemen data stok bahan ajar</p>
+          </div>
+        </a>
+    
+        <!-- Card Link ke halaman Tracking -->
+        <a href="tracking.html" class="relative bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl md:rounded-3xl p-6 md:p-8 w-full transition-all duration-300 hover:-translate-y-2 overflow-hidden group flex flex-col justify-between min-h-[160px]">
+          <div class="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          
+          <div class="relative z-10 text-white">
+            <div class="text-4xl mb-3 transition-transform duration-300 group-hover:scale-110 origin-left">🚚</div>
+            <h2 class="text-xl md:text-2xl font-bold mb-1">Tracking</h2>
+            <p class="text-white/60 text-xs md:text-sm leading-relaxed">Pantau pengiriman delivery order</p>
+          </div>
+        </a>
+
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

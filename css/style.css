@@ -1,0 +1,12 @@
+/* Untuk mempersingkat pengerjaan tugas saya menggunakan CDN tailwind */
+
+/* Template sederhana untuk document.body dan #app */
+body {
+  color: #ffffff;
+}
+
+#app {
+  min-height: 100vh;
+  padding: 1.5rem;
+  background-image: linear-gradient(to bottom right, #0f172a, #312e81, #0f172a); 
+}
