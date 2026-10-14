@@ -85,7 +85,7 @@ createApp({
     }
 
     const resetFilter = () => {
-      stokList.value = [...masterStok]
+      stokList.value = [...masterStok.value]
     }
 
     const editItem = (item) => {
