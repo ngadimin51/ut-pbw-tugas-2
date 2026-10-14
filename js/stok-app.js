@@ -24,6 +24,7 @@ createApp({
     // const stokList = ref([...stok]);
     // untuk menyimpan nilai form sementara
     const editForm = ref(null);
+    const formTambah = ref(false)
 
     // pantau perubahan nilai pada form filter
     watch([upbjj, kategori, limit, sortBy, order], (newValues, oldValues) => {
@@ -141,6 +142,37 @@ Order    : ${orderOld} → ${orderNew}
       }
     };
 
+    const toggleForm = () => {
+      formTambah.value = !formTambah.value
+    }
+
+    const submitTambah = (event) => {
+      const f = new FormData(event.target)
+      const kode = f.get('kode')
+      const judul = f.get('judul')
+      const kategori = f.get('kategori')
+      const upbjj = f.get('upbjj')
+      const qty = f.get('qty')
+      const safety = f.get('safety')
+      const harga = f.get('harga')
+      const lokasiRak = f.get('lokasiRak')
+      const catatanHTML = f.get('catatanHTML')
+
+      // validasi kode jangan sama
+      const duplikat = masterStok.value.findIndex(x => x.kode == kode)
+      if (duplikat >= 0) {
+        alert("Kode sudah digunakan")
+      }
+      masterStok.value = [...masterStok.value, {
+        kode, judul, kategori, upbjj, qty, safety, harga, lokasiRak, catatanHTML
+      }]
+      console.log(`INI FUNGSI SUBMIT TAMBAH`)
+      console.log({
+        kode, judul, kategori, upbjj, qty, safety, harga, lokasiRak, catatanHTML
+      })
+      formTambah.value = false
+    }
+
     // kirim ke frontend (client)
     return {
       daftarUpbjj,
@@ -151,9 +183,12 @@ Order    : ${orderOld} → ${orderNew}
       order,
       stokList,
       editForm,
+      formTambah,
       resetFilter,
       editItem,
       saveUpdate,
+      toggleForm,
+      submitTambah
     };
   }
 }).mount('#app');
