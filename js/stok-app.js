@@ -58,7 +58,12 @@ Order    : ${orderOld} → ${orderNew}
         data = data.filter(item => item.kategori === kategori.value);
       }
 
-      // 4. Proses sorting otomatis
+      // 4. Batasi jumlah tampilan jika ada limit
+      if (limit.value !== '' && !isNaN(limit.value)) {
+        data = data.filter(item => item.qty <= limit.value);
+      }
+
+      // 5. Proses filter dan sorting
       data.sort((a, b) => {
         let nilaiA = a[sortBy.value];
         let nilaiB = b[sortBy.value];
@@ -72,11 +77,6 @@ Order    : ${orderOld} → ${orderNew}
         }
         return order.value === 'asc' ? nilaiA - nilaiB : nilaiB - nilaiA;
       });
-
-      // 5. Batasi jumlah tampilan jika ada limit
-      if (limit.value !== '' && limit.value <= 0) {
-        data = data.filter(item => item.qty <= limit.value);
-      }
 
       // 6. Langsung kembalikan datanya (return)
       return data;
