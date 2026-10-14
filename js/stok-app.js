@@ -21,7 +21,8 @@ createApp({
     const order = ref('asc')
     // Membaca stok langsung dari file dataBahanAjar.js secara global
     const masterStok = ref([...stok]);  // yang ini untuk diubah-ubah karena tidak pakai database
-    const stokList = ref([...stok]);
+    // const stokList = ref([...stok]);
+    // untuk menyimpan nilai form sementara
     const editForm = ref(null);
 
     // pantau perubahan nilai pada form filter
@@ -30,86 +31,97 @@ createApp({
       const [upbjjNew, kategoriNew, limitNew, sortByNew, orderNew] = newValues;
       const [upbjjOld, kategoriOld, limitOld, sortByOld, orderOld] = oldValues;
       // kita log perubahan agar debugnya enak
-      console.log('Terjadi perubahan data!');
+      console.log('\n\n⚡ Terjadi perubahan data!');
       console.log(`
-        ====== PERUBAHAN FILTER ======
-        UPBJJ    : ${upbjjOld} → ${upbjjNew}
-        Kategori : ${kategoriOld} → ${kategoriNew}
-        Limit    : ${limitOld} → ${limitNew}
-        Sort By  : ${sortByOld} → ${sortByNew}
-        Order    : ${orderOld} → ${orderNew}
-        ==============================
+====== PERUBAHAN FILTER ======
+UPBJJ    : ${upbjjOld} → ${upbjjNew}
+Kategori : ${kategoriOld} → ${kategoriNew}
+Limit    : ${limitOld} → ${limitNew}
+Sort By  : ${sortByOld} → ${sortByNew}
+Order    : ${orderOld} → ${orderNew}
+==============================
       `);
     });
 
-    const applyFilter = () => {
-      // 1. Ambil data segar dari file master data (stok) agar data lama tidak hilang
+    // Gantilah variabel stokList manual dan fungsi applyFilter Anda dengan ini:
+    const stokList = computed(() => {
+      // 1. Ambil data segar dari masterStok
       let data = [...masterStok.value];
-      console.log({
-        upbjj: upbjj.value,
-        kategori: kategori.value,
-        sortBy: sortBy.value,
-        order: order.value,
-        limit: limit.value,
-        dataLength: masterStok.value.length
-      })
 
-      // 2. Ambil nilai dari state UPBJJ dan lakukan penyaringan
+      // 2. Filter berdasarkan UPBJJ jika ada pilihannya
       if (upbjj.value) {
         data = data.filter(item => item.upbjj === upbjj.value);
-        console.log(`Filter berdasar UPBJJ : ${upbjj.value}`)
-        console.log({dataLength: data.length})
       }
 
-      // 3. Ambil nilai dari state Kategori dan lakukan penyaringan
+      // 3. Filter berdasarkan Kategori
       if (kategori.value) {
         data = data.filter(item => item.kategori === kategori.value);
-        console.log(`Filter berdasar KATEGORI : ${kategori.value}`)
-        console.log({dataLength: data.length})
       }
 
-      // 4. Proses sorting berdasarkan state sortBy dan order saat ini
+      // 4. Proses sorting otomatis
       data.sort((a, b) => {
         let nilaiA = a[sortBy.value];
         let nilaiB = b[sortBy.value];
 
-        // Antisipasi jika properti tidak ditemukan
         if (nilaiA === undefined || nilaiB === undefined) return 0;
 
-        // Jika tipe data teks/string (seperti judul)
         if (typeof nilaiA === 'string') {
           return order.value === 'asc' 
             ? nilaiA.toLowerCase().localeCompare(nilaiB.toLowerCase()) 
             : nilaiB.toLowerCase().localeCompare(nilaiA.toLowerCase());
         }
-        console.log(`Filter berdasar ORDER : ${order.value}`)
-        console.log({dataLength: data.length})
-
-        // Jika tipe data angka (seperti qty atau harga)
         return order.value === 'asc' ? nilaiA - nilaiB : nilaiB - nilaiA;
       });
 
-      // 5. Batasi jumlah tampilan berdasarkan state limit
+      // 5. Batasi jumlah tampilan jika ada limit
       if (limit.value !== '' && limit.value <= 0) {
         data = data.filter(item => item.qty <= limit.value);
-        console.log(`Filter berdasar LIMIT : ${limit.value}`)
-        console.log({dataLength: data.length})
       }
 
-      // 6. Masukkan hasil akhir penyeleksian ke state utama yang di-render oleh HTML tabel
-      stokList.value = data;
-    }
+      // 6. Langsung kembalikan datanya (return)
+      return data;
+    });
 
+
+    // mengembalikan hasil filter
     const resetFilter = () => {
-      stokList.value = [...masterStok.value]
+      console.log(`\n\n⚡ Reset filter`)
+      upbjj.value = ''
+      kategori.value = ''
+      limit.value = ''
+      sortBy.value = 'judul'
+      order.value = 'asc'
     }
 
+    // mencegah perubahan form agar tidak langsung masuk ke state
     const editItem = (item) => {
+      console.log(item)
       editForm.value = item ? { ...item } : null;
     };
 
-   const saveUpdate = () => {
+    // memasukkkan nilai form ke data masterStok
+    const saveUpdate = () => {
       if (!editForm.value) return;
+
+      // validasi data
+      const {
+        kode, judul, qty, safety, harga, lokasiRak
+      } = editForm.value
+      if (!judul || judul.length < 3) {
+        return alert("Tentukan judul minimal 3 karakter")
+      }
+      if (Number(qty) < 0) {
+        return alert("Minimal input jumlah adalah 0")
+      }
+      if (Number(safety) < 0) {
+        return alert("Minimal input safety adalah 0")
+      }
+      if (Number(harga) < 0) {
+        return alert("Minimal input harga adalah 0")
+      }
+      if (!lokasiRak || lokasiRak.length < 3) {
+        return alert("Tentukan lokasi Rak minimal 3 karakter")
+      }
 
       // 1. Cari index di dalam masterStok.value berdasar [kode]
       const indexMaster = masterStok.value.findIndex(x => x.kode === editForm.value.kode);
@@ -129,6 +141,7 @@ createApp({
       }
     };
 
+    // kirim ke frontend (client)
     return {
       daftarUpbjj,
       daftarKategori,
@@ -138,7 +151,6 @@ createApp({
       order,
       stokList,
       editForm,
-      applyFilter,
       resetFilter,
       editItem,
       saveUpdate,

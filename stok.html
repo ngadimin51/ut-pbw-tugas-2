@@ -4,9 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halaman 1: Stok Bahan Ajar</title>
-  <link rel="stylesheet" href="css/style.css">
+  <!-- CDN TAILWIND -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- CSS LOKAL -->
+  <link rel="stylesheet" href="css/style.css">
+  <!-- VUE JS production -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 </head>
 <body>
   <div id="app">
@@ -19,9 +22,10 @@
     </div>
 
     <!-- FILTER, SORT & PENCARIAN -->
-    <form @submit.prevent="applyFilter" class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 mb-8 backdrop-blur-md shadow-xl space-y-4">
+    <!-- implementasi submit, v-model dan v-for -->
+    <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 mb-8 backdrop-blur-md shadow-xl space-y-4">
       <!-- Baris 1: Filter & Limit -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <div>
           <label for="upbjj" class="block text-xs font-medium text-gray-300 mb-1">UPBJJ</label>
           <select v-model="upbjj" name="upbjj" id="upbjj" class="w-full p-2.5 bg-slate-900 text-white border border-slate-700 outline-none rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm">
@@ -86,20 +90,18 @@
         <button type="button" @click="resetFilter" class="px-5 py-2 bg-slate-700 hover:bg-slate-600 active:scale-95 rounded-xl text-sm transition-all cursor-pointer font-medium">
           🔄 Reset
         </button>
-        <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-95 rounded-xl text-sm font-semibold transition-all cursor-pointer shadow-md shadow-indigo-600/30">
-          🔍 Submit
-        </button>
       </div>
-    </form>
+    </div>
 
     <!-- KONTEN CARD -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- implementasi v-for -->
       <div v-for="item in stokList" :key="item.kode" class="relative bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 shadow-lg rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
         
         <div>
           <!-- Header Card -->
           <div class="flex justify-between items-center mb-3">
-            <span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs px-3 py-1 rounded-full font-medium">
+            <span class="bg-indigo-500/20 text-indigo-100 border border-indigo-500/30 text-xs px-3 py-1 rounded-full font-medium">
               {{ item.kategori }}
             </span>
             <div class="flex items-center gap-2">
@@ -112,15 +114,15 @@
 
           <h2 class="text-lg font-bold mb-4 leading-tight text-white">{{ item.judul }}</h2>
 
-          <!-- Detail Informasi -->
+          <!-- Detail Informasi implementasi v-text -->
           <div class="space-y-2 text-sm mb-4">
             <div class="flex justify-between items-center">
               <span class="text-gray-300">UPBJJ</span>
-              <span class="font-medium bg-slate-800 px-3 py-0.5 rounded-full text-xs text-gray-200 border border-slate-700">{{ item.upbjj }}</span>
+              <span class="font-medium bg-slate-800 px-3 py-0.5 rounded-full text-xs text-gray-200 border border-slate-700" v-text="item.upbjj"></span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-300">Lokasi Rak</span>
-              <span class="font-medium bg-slate-800 px-3 py-0.5 rounded-full text-xs text-gray-200 border border-slate-700">{{ item.lokasiRak }}</span>
+              <span class="font-medium bg-slate-800 px-3 py-0.5 rounded-full text-xs text-gray-200 border border-slate-700" v-text="item.lokasiRak"></span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-300">Harga</span>
@@ -135,7 +137,7 @@
                 <div class="text-[11px] text-gray-400">Safety: {{ item.safety }} PCS</div>
               </div>
             </div>
-            <!-- Status Ketersediaan -->
+            <!-- Status Ketersediaan implementasi TERNARY-->
             <div class="space-y-2 pt-2 mt-1 border-t border-white/5">
               <div class="flex justify-between items-center">
                 <span class="text-gray-300">Status</span>
@@ -151,7 +153,8 @@
                 </span>
               </div>
 
-              <!-- Jika Qty = 0 Berikan notifikasi yang mencolok dnegan pulse warna merah-->
+              <!-- Jika Qty = 0 Berikan notifikasi yang mencolok dengan pulse warna merah-->
+              <!-- implementasi v-show -->
               <div 
                 v-show="item.qty === 0" 
                 class="flex items-center justify-center gap-1.5 bg-red-600 text-white text-[11px] font-black tracking-widest uppercase py-1 px-3 rounded shadow-lg shadow-red-600/30 animate-pulse text-center"
@@ -161,12 +164,12 @@
             </div>
           </div>
         </div>
-
+        <!-- implementasi v-html -->
         <div v-html="item.catatanHTML" class="text-xs text-gray-300 pt-2 border-t border-white/10"></div>
       </div>
     </div>
 
-    <!-- MODAL EDIT DATA STOK -->
+    <!-- MODAL EDIT DATA STOK implementasi v-if -->
     <div v-if="editForm" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div class="bg-slate-800 border border-slate-700 text-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
         <div class="flex justify-between items-center border-b border-slate-700 pb-3">
@@ -187,6 +190,16 @@
             </div>
 
             <div>
+              <label class="block text-xs font-medium text-gray-300 mb-1">Kategori</label>
+              <input v-model="editForm.kategori" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-gray-300 mb-1">UPBJJ</label>
+              <input v-model="editForm.upbjj" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+            </div>
+
+            <div>
               <label class="block text-xs font-medium text-gray-300 mb-1">Jumlah Stok (QTY)</label>
               <input v-model.number="editForm.qty" type="number" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
             </div>
@@ -204,6 +217,11 @@
             <div>
               <label class="block text-xs font-medium text-gray-300 mb-1">Lokasi Rak</label>
               <input v-model="editForm.lokasiRak" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+            </div>
+
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-gray-300 mb-1">Catatan HTML</label>
+              <textarea v-model="editForm.catatanHTML" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
             </div>
           </div>
 
