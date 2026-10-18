@@ -1,3 +1,6 @@
+# Video Youtube
+    https://www.youtube.com/watch?v=5aqh_74Nqf4
+  
 # Soal Tugas
 
 Anda diminta untuk membuat sebuah aplikasi website sederhana untuk pemesanan Bahan Ajar di Universitas Terbuka. Pada Tugas Praktik Kedua ini, mahasiswa berfokus untuk membuat aplikasi website berbasis Vue.js sebagai framework yang digunakan sepanjang pengerjaan Tugas Praktik 2. Sehingga, data-data yang dibutuhkan tidak dibaca melalui database, tapi melalui js file sebagai dummy data yang akan dilampirkan bersamaan dengan Tugas Praktik ini.
