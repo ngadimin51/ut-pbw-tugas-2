@@ -161,7 +161,7 @@ Order    : ${orderOld} → ${orderNew}
       // validasi kode jangan sama
       const duplikat = masterStok.value.findIndex(x => x.kode == kode)
       if (duplikat >= 0) {
-        alert("Kode sudah digunakan")
+        return alert("Kode sudah digunakan")
       }
       masterStok.value = [...masterStok.value, {
         kode, judul, kategori, upbjj, qty, safety, harga, lokasiRak, catatanHTML
