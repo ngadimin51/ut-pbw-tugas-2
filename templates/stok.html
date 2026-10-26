@@ -1,0 +1,284 @@
+<div>
+  <!-- FILTER, SORT & PENCARIAN -->
+  <!-- implementasi submit, v-model dan v-for -->
+  <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 mb-8 backdrop-blur-md shadow-xl space-y-4">
+    <!-- Baris 1: Filter & Limit -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div>
+        <label for="upbjj" class="block text-xs font-medium text-gray-300 mb-1">UPBJJ</label>
+        <select v-model="upbjj" name="upbjj" id="upbjj" @change="$emit('update:upbjj', $event.target.value)" class="w-full p-2.5 bg-slate-900 text-white border border-slate-700 outline-none rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm">
+          <option value="">-- Silahkan Pilih UPBJJ --</option>
+          <option v-for="item in daftarUpbjj" :key="item" :value="item" v-text="item"></option>
+        </select>
+      </div>
+
+      <div v-if="upbjj">
+        <label for="kategori" class="block text-xs font-medium text-gray-300 mb-1">kategori</label>
+        <select v-model="kategori" name="kategori" id="kategori" @change="$emit('update:kategori', $event.target.value)" class="w-full p-2.5 bg-slate-900 text-white border border-slate-700 outline-none rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm">
+          <option value="">-- Silahkan pilih kategori --</option>
+          <option v-for="item in daftarKategori" :key="item" :value="item">{{item}}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="qty" class="block text-xs font-medium text-gray-300 mb-1">Batas Tampil (Limit)</label>
+        <input v-model="limit" @change="$emit('update:limit', $event.target.value)" type="number" min="0" name="qty" id="qty" placeholder="Masukkan limit..." class="w-full p-2.5 bg-slate-900 text-white border border-slate-700 outline-none rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm">
+      </div>
+    </div>
+
+    <!-- Baris 2: Sort Radio (Atribut) & Radio Asc/Desc -->
+    <div class="pt-3 border-t border-slate-700/60 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+      <!-- Radio Button Pengurutan (Sort By) -->
+      <div>
+        <label class="block text-xs font-medium text-gray-300 mb-2">Urutkan Berdasarkan (Sort By):</label>
+        <div class="flex flex-wrap gap-4 text-sm">
+          <label class="inline-flex items-center gap-2 cursor-pointer hover:text-indigo-300 transition-colors">
+            <input type="radio" v-model="sortBy" @change="$emit('update:sortBy', $event.target.value)" value="judul" name="sortBy" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+            <span>Judul</span>
+          </label>
+          <label class="inline-flex items-center gap-2 cursor-pointer hover:text-indigo-300 transition-colors">
+            <input type="radio" v-model="sortBy" @change="$emit('update:sortBy', $event.target.value)" value="qty" name="sortBy" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+            <span>Stok</span>
+          </label>
+          <label class="inline-flex items-center gap-2 cursor-pointer hover:text-indigo-300 transition-colors">
+            <input type="radio" v-model="sortBy" @change="$emit('update:sortBy', $event.target.value)" value="harga" name="sortBy" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+            <span>Harga</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Radio Button Arah Urutan (Asc/Desc) -->
+      <div>
+        <label class="block text-xs font-medium text-gray-300 mb-2">Arah Urutan (Order):</label>
+        <div class="flex gap-6 text-sm">
+          <label class="inline-flex items-center gap-2 cursor-pointer hover:text-indigo-300 transition-colors">
+            <input type="radio" v-model="order" @change="$emit('update:order', $event.target.value)" value="asc" name="sortOrder" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+            <span>Ascending (A-Z / Terkecil)</span>
+          </label>
+          <label class="inline-flex items-center gap-2 cursor-pointer hover:text-indigo-300 transition-colors">
+            <input type="radio" v-model="order" @change="$emit('update:order', $event.target.value)" value="desc" name="sortOrder" class="w-4 h-4 accent-indigo-500 cursor-pointer">
+            <span>Descending (Z-A / Terbesar)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Baris 3: Tombol Submit & Reset -->
+    <div class="flex justify-end gap-3 pt-3 border-t border-slate-700/60">
+      <button type="button" @click="resetFilter" class="px-5 py-2 bg-slate-700 hover:bg-slate-600 active:scale-95 rounded-xl text-sm transition-all cursor-pointer font-medium">
+        🔄 Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- KONTEN CARD -->
+  <div class="flex justify-center mb-4">
+    <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+      <button type="button" @click="toggleForm()" class="cursor-pointer text-gray-400 hover:text-white text-lg">
+        + Tambah Stok Bahan Ajar
+      </button>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- implementasi v-for -->
+    <div v-for="item in stokList" :key="item.kode" class="relative bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 shadow-lg rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between">
+      
+      <div>
+        <!-- Header Card -->
+        <div class="flex justify-between items-center mb-3">
+          <span class="bg-indigo-500/20 text-indigo-100 border border-indigo-500/30 text-xs px-3 py-1 rounded-full font-medium">
+            {{ item.kategori }}
+          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-gray-300 bg-slate-800 px-2 py-1 rounded border border-slate-700">{{ item.kode }}</span>
+            <button @click="editItem(item)" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1">
+              ✏️ Edit
+            </button>
+          </div>
+        </div>
+  
+        <h2 class="text-lg font-bold mb-4 leading-tight text-white">{{ item.judul }}</h2>
+  
+        <!-- Detail Informasi implementasi v-text -->
+        <div class="space-y-2 text-sm mb-4">
+          <div class="flex justify-between items-center">
+            <span class="text-gray-300">UPBJJ</span>
+            <span class="font-medium bg-slate-800 px-3 py-0.5 rounded-full text-xs text-gray-200 border border-slate-700" v-text="item.upbjj"></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-300">Lokasi Rak</span>
+            <span class="font-medium bg-slate-800 px-3 py-0.5 rounded-full text-xs text-gray-200 border border-slate-700" v-text="item.lokasiRak"></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-gray-300">Harga</span>
+            <span class="font-semibold text-emerald-400">Rp {{ item.harga.toLocaleString('id-ID') }}</span>
+          </div>
+          <div class="flex justify-between items-center pt-2 border-t border-white/10">
+            <span class="text-gray-300">Ketersediaan</span>
+            <div class="text-right">
+              <span class="font-bold text-base" :class="item.qty <= item.safety ? 'text-red-400' : 'text-emerald-400'">
+                {{ item.qty }} PCS
+              </span>
+              <div class="text-[11px] text-gray-400">Safety: {{ item.safety }} PCS</div>
+            </div>
+          </div>
+          <!-- Status Ketersediaan implementasi TERNARY-->
+          <div class="space-y-2 pt-2 mt-1 border-t border-white/5">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-300">Status</span>
+              <span 
+                class="px-2.5 py-0.5 rounded-md text-xs font-bold tracking-wide uppercase border"
+                :class="{
+                  'bg-emerald-500/10 text-emerald-400 border-emerald-500/20': item.qty > item.safety,
+                  'bg-amber-500/10 text-amber-400 border-amber-500/20': item.qty <= item.safety && item.qty > 0,
+                  'bg-rose-500/10 text-rose-400 border-rose-500/20': item.qty === 0
+                }"
+              >
+                {{ item.qty === 0 ? "❌ KOSONG" : item.qty <= item.safety ? "⚡ Menipis" : "✅ AMAN" }}
+              </span>
+            </div>
+  
+            <!-- Jika Qty = 0 Berikan notifikasi yang mencolok dengan pulse warna merah-->
+            <!-- implementasi v-show -->
+            <div 
+              v-show="item.qty === 0" 
+              class="flex items-center justify-center gap-1.5 bg-red-600 text-white text-[11px] font-black tracking-widest uppercase py-1 px-3 rounded shadow-lg shadow-red-600/30 animate-pulse text-center"
+            >
+              <span>⚠️</span> REORDER SEGERA!
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- implementasi v-html -->
+      <div v-html="item.catatanHTML" class="text-xs text-gray-300 pt-2 border-t border-white/10"></div>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT DATA STOK implementasi v-if -->
+  <div v-if="editForm" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-800 border border-slate-700 text-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h2 class="text-xl font-bold">✏️ Edit Stok Bahan Ajar</h2>
+        <button type="button" @click="editItem(null)" class="text-gray-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <form @submit.prevent="saveUpdate" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1">Kode Matkul</label>
+            <input type="text" :value="editForm.kode" disabled class="w-full p-2.5 bg-slate-900/60 text-gray-400 border border-slate-700 rounded-xl text-sm cursor-not-allowed">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Judul Mata Kuliah</label>
+            <input v-model="editForm.judul" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Kategori</label>
+            <input v-model="editForm.kategori" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">UPBJJ</label>
+            <input v-model="editForm.upbjj" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Jumlah Stok (QTY)</label>
+            <input v-model.number="editForm.qty" type="number" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Safety Stock</label>
+            <input v-model.number="editForm.safety" type="number" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Harga (Rp)</label>
+            <input v-model.number="editForm.harga" type="number" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Lokasi Rak</label>
+            <input v-model="editForm.lokasiRak" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-gray-300 mb-1">Catatan HTML</label>
+            <textarea v-model="editForm.catatanHTML" type="text" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t border-slate-700">
+          <button type="button" @click="editItem(null)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm transition-all cursor-pointer">Batal</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition-all cursor-pointer">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH DATA STOK implementasi -->
+  <div v-if="formTambah" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-800 border border-slate-700 text-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h2 class="text-xl font-bold">Tambah Stok Bahan Ajar</h2>
+        <button type="button" @click="toggleForm()" class="text-gray-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <form @submit.prevent="submitTambah" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-400 mb-1">Kode Matkul</label>
+            <input type="text" name="kode" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Judul Mata Kuliah</label>
+            <input type="text" name="judul" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Kategori</label>
+            <input type="text" name="kategori" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">UPBJJ</label>
+            <input type="text" name="upbjj" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Jumlah Stok (QTY)</label>
+            <input type="number" name="qty" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Safety Stock</label>
+            <input type="number" name="safety" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Harga (Rp)</label>
+            <input type="number" name="harga" min="0" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-gray-300 mb-1">Lokasi Rak</label>
+            <input type="text" name="lokasiRak" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-medium text-gray-300 mb-1">Catatan HTML</label>
+            <textarea name="catatanHTML" required class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t border-slate-700">
+          <button type="button" @click="toggleForm()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm transition-all cursor-pointer">Batal</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-semibold transition-all cursor-pointer">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

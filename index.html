@@ -8,13 +8,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <!-- CSS LOKAL -->
   <link rel="stylesheet" href="css/style.css">
+  <!-- VUE 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 </head>
 <body>
   <div id="app">
     <!-- Kontainer utama dengan gradasi premium dan susunan flex responsif -->
     <div class="min-h-screen flex flex-col items-center justify-center p-6 gap-8 md:gap-12">
       
-      <!-- ================= BAGIAN DATA MAHASISWA (SUPER KEREN) ================= -->
+      <!-- ================= BAGIAN DATA MAHASISWA ================= -->
       <div class="relative bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 w-full max-w-2xl text-center shadow-2xl overflow-hidden group">
         <!-- Efek sorot cahaya di background belakang teks -->
         <div class="absolute -inset-10 bg-linear-to-r from-indigo-500/10 via-purple-500/10 to-emerald-500/10 blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -22,7 +24,7 @@
         <div class="relative z-10 flex flex-col items-center">
           <!-- Badge Angkatan / Status Kuliah -->
           <span class="bg-indigo-500/10 text-indigo-400 text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full border border-indigo-500/20 mb-3">
-            🚀 Tugas 2 Perkuliahan
+            🚀 Tugas 3 Refactor berdasar Tugas 2
           </span>
           
           <!-- Judul Mata Kuliah -->
@@ -49,9 +51,12 @@
 
       <!-- Kontainer untuk Kartu Menu Navigasi -->
       <div class="flex flex-col md:flex-row items-center justify-center gap-6 w-full max-w-2xl">
-        
         <!-- Card Link ke halaman Stok -->
-        <a href="stok.html" class="relative bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl md:rounded-3xl p-6 md:p-8 w-full transition-all duration-300 hover:-translate-y-2 overflow-hidden group flex flex-col justify-between min-h-[160px]">
+        <button 
+          @click="view !== 'stok' && handleView('stok')"
+          class="relative bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl md:rounded-3xl p-6 md:p-8 w-full transition-all duration-300 hover:-translate-y-2 overflow-hidden group flex flex-col justify-between min-h-[160px]"
+          :class="`${view == 'stok' ? 'cursor-not-allowed' : 'cursor-pointer'}`"
+        >
           <div class="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
           <div class="relative z-10 text-white">
@@ -59,10 +64,10 @@
             <h2 class="text-xl md:text-2xl font-bold mb-1">Stok</h2>
             <p class="text-white/60 text-xs md:text-sm leading-relaxed">Manajemen data stok bahan ajar</p>
           </div>
-        </a>
+        </button>
     
         <!-- Card Link ke halaman Tracking -->
-        <a href="tracking.html" class="relative bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl md:rounded-3xl p-6 md:p-8 w-full transition-all duration-300 hover:-translate-y-2 overflow-hidden group flex flex-col justify-between min-h-[160px]">
+        <button @click="handleView('tracking')" class="cursor-pointer relative bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/10 shadow-xl rounded-2xl md:rounded-3xl p-6 md:p-8 w-full transition-all duration-300 hover:-translate-y-2 overflow-hidden group flex flex-col justify-between min-h-[160px]">
           <div class="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           
           <div class="relative z-10 text-white">
@@ -70,11 +75,44 @@
             <h2 class="text-xl md:text-2xl font-bold mb-1">Tracking</h2>
             <p class="text-white/60 text-xs md:text-sm leading-relaxed">Pantau pengiriman delivery order</p>
           </div>
-        </a>
-
+        </button>
       </div>
+
+      <komponen-stok
+        v-if="view == 'stok'"
+
+        :daftar-upbjj="daftarUpbjj"
+        :daftar-kategori="daftarKategori"
+        v-model:upbjj="upbjj"
+        v-model:kategori="kategori"
+        v-model:limit="limit"
+        v-model:sort-by="sortBy"
+        v-model:order="order"
+
+        :stok-list="stokList"
+        :edit-form="editForm"
+        :edit-item="editItem"
+        :toggle-form="toggleForm"
+        :form-tambah="formTambah"
+        :submit-tambah="submitTambah"
+        :save-update="saveUpdate"
+        :reset-filter="resetFilter"
+      ></komponen-stok>
+
+      <komponen-tracking
+        v-if="view == 'tracking'"
+        
+        v-model:kode-paket="kodePaket"
+        
+        :daftar-upbjj="daftarUpbjj"
+        :daftar-tracking="daftarTracking"
+        :paket="paket"
+        :isi-paket="isiPaket"
+        :simpan-data-tracking="simpanDataTracking"
+      ></komponen-tracking>
 
     </div>
   </div>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
