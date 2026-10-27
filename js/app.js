@@ -32,6 +32,13 @@ const app = createApp({
     const kodePaket = ref('')
     const isiPaket = ref('')
 
+    // Notification
+    const close = ref(true)
+    const title = ref("")
+    const message = ref("")
+    const type = ref("")
+    const footer = ref("")
+
     watch(kodePaket, (value) => {
       isiPaket.value = paket.value.find(x => x.kode === value)
     })
@@ -146,7 +153,12 @@ Order    : ${orderOld} → ${orderNew}
       // validasi kode jangan sama
       const duplikat = stok.value.findIndex(x => x.kode == kode)
       if (duplikat >= 0) {
-        return alert("Kode sudah digunakan")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "Kode sudah digunakan",
+          tipe: "warning",
+          kaki: ""
+        })
       }
       stok.value = [...stok.value, {
         kode, judul, kategori, upbjj, qty, safety, harga, lokasiRak, catatanHTML
@@ -156,6 +168,12 @@ Order    : ${orderOld} → ${orderNew}
         kode, judul, kategori, upbjj, qty, safety, harga, lokasiRak, catatanHTML
       })
       formTambah.value = false
+      toggleNotification({
+        judul: "Berhasil",
+        pesan: `Berhasil menambahkan stok <b>${kode}-${judul}</b>`,
+        tipe: "success",
+        kaki: ""
+      })
     }
 
     // memasukkkan nilai form ke data stok
@@ -167,19 +185,44 @@ Order    : ${orderOld} → ${orderNew}
         kode, judul, qty, safety, harga, lokasiRak
       } = editForm.value
       if (!judul || judul.length < 3) {
-        return alert("Tentukan judul minimal 3 karakter")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "Tentukan judul minimal 3 karakter",
+          tipe: "warning",
+          kaki: ""
+        })
       }
       if (Number(qty) < 0) {
-        return alert("Minimal input jumlah adalah 0")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "Minimal input jumlah adalah 0",
+          tipe: "warning",
+          kaki: ""
+        })
       }
       if (Number(safety) < 0) {
-        return alert("Minimal input safety adalah 0")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "Minimal input safety adalah 0",
+          tipe: "warning",
+          kaki: ""
+        })
       }
       if (Number(harga) < 0) {
-        return alert("Minimal input harga adalah 0")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "Minimal input harga adalah 0",
+          tipe: "warning",
+          kaki: ""
+        })
       }
       if (!lokasiRak || lokasiRak.length < 3) {
-        return alert("Tentukan lokasi Rak minimal 3 karakter")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "Tentukan input lokasi Rak minimal 3 karakte 0",
+          tipe: "warning",
+          kaki: ""
+        })
       }
 
       // 1. Cari index di dalam masterStok.value berdasar [kode]
@@ -195,6 +238,12 @@ Order    : ${orderOld} → ${orderNew}
         // 4. Hapus nilai editForm
         editForm.value = null;
         console.log('Data berhasil diperbarui!');
+        toggleNotification({
+          judul: "Berhasil",
+          pesan: `Data buku <b>${stok.value[indexMaster].kode}-${stok.value[indexMaster].judul}</b> berhasil diperbarui`,
+          tipe: "success",
+          kaki: ""
+        })
       } else {
         console.error('Data tidak ditemukan di master stok!');
       }
@@ -236,7 +285,12 @@ Order    : ${orderOld} → ${orderNew}
 
       const isiPaket = paket.value.find(x => x.kode === kodePaket.value)
       if (!isiPaket) {
-        return alert("paket tidak ditemukan")
+        return toggleNotification({
+          judul: "Gagal",
+          pesan: "paket tidak ditemukan",
+          tipe: "danger",
+          kaki: ""
+        })
       }
       const harga = isiPaket.harga
 
@@ -249,7 +303,7 @@ Order    : ${orderOld} → ${orderNew}
           tanggalKirim: tanggal,
           paket: isiPaket.kode,
           total: harga,
-          perjalanan: [
+          perjalanan: [ 
             {
               waktu: new Date().toISOString().replace('T', ' ').substring(0, 19), // Waktu saat ini (YYYY-MM-DD HH:mm:ss)
               keterangan: `Penerimaan di Loket: ${ekspedisi.split(' - ')[1] || 'Pusat'}`
@@ -258,7 +312,31 @@ Order    : ${orderOld} → ${orderNew}
         }
       }
       daftarTracking.value = [...daftarTracking.value, dataBaru]
-      alert("Data berhasil ditambahkan")
+      toggleNotification({
+        judul: "Berhasil",
+        pesan: `Data tracking <b>${nomorDo}</b> atas nama <b>${nama}</b> NIM <b>${nim}</b> berhasil ditambahkan`,
+        tipe: "success",
+        kaki: ""
+      })
+    }
+
+    /**
+     * NOTIFICATION
+     */
+    const closeNotification = () => {
+      close.value = !close.value
+      title.value = ''
+      message.value = ''
+      footer.value = ''
+      type.value = ''
+    }
+
+    const toggleNotification = ({judul, pesan, tipe, kaki}) => {
+      title.value = judul || 'Information'
+      message.value = pesan || 'Terjadi kendala'
+      type.value = tipe || ''
+      footer.value = kaki || ''
+      close.value = !close.value
     }
 
     return {
@@ -290,7 +368,15 @@ Order    : ${orderOld} → ${orderNew}
       kodePaket,
       paket,
       isiPaket,
-      simpanDataTracking
+      simpanDataTracking,
+
+      // NOTIFICATION
+      close,
+      title,
+      message,
+      type,
+      closeNotification,
+      toggleNotification
     }
     
   }
@@ -302,5 +388,8 @@ app.component('komponen-stok', FileStok);
 
 import FileTracking from './components/tracking.js';
 app.component('komponen-tracking', FileTracking);
+
+import FileNotification from './components/notification.js'
+app.component('komponen-notification', FileNotification)
 
 app.mount('#app');

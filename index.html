@@ -111,6 +111,16 @@
         :simpan-data-tracking="simpanDataTracking"
       ></komponen-tracking>
 
+      <komponen-notification
+        v-if="!close"
+        :title="title"
+        :message="message"
+        :type="type"
+        :footer="footer"
+        :close-notification="closeNotification"
+        :toggle-notification="toggleNotification"
+      ></komponen-notification>
+
     </div>
   </div>
   <script type="module" src="js/app.js"></script>
