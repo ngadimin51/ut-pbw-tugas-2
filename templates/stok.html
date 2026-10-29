@@ -111,7 +111,7 @@
           </div>
           <div class="flex justify-between items-center">
             <span class="text-gray-300">Harga</span>
-            <span class="font-semibold text-emerald-400">Rp {{ item.harga.toLocaleString('id-ID') }}</span>
+            <span class="font-semibold text-emerald-400">{{ item.harga.toLocaleString('id-ID', {style:"currency", currency:"IDR"}) }}</span>
           </div>
           <div class="flex justify-between items-center pt-2 border-t border-white/10">
             <span class="text-gray-300">Ketersediaan</span>
