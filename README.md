@@ -3,11 +3,12 @@
   
 # Soal Tugas
 
-Anda diminta untuk membuat sebuah aplikasi website sederhana untuk pemesanan Bahan Ajar di Universitas Terbuka. Pada Tugas Praktik Kedua ini, mahasiswa berfokus untuk membuat aplikasi website berbasis Vue.js sebagai framework yang digunakan sepanjang pengerjaan Tugas Praktik 2. Sehingga, data-data yang dibutuhkan tidak dibaca melalui database, tapi melalui js file sebagai dummy data yang akan dilampirkan bersamaan dengan Tugas Praktik ini.
+Anda diminta untuk membuat sebuah aplikasi website sederhana untuk pemesanan Bahan Ajar di Universitas Terbuka. Pada Tugas Praktik Kedua ini, mahasiswa berfokus untuk membuat aplikasi website berbasis Vue.js sebagai framework yang digunakan sepanjang pengerjaan Tugas Praktik 3 Sehingga, data-data yang dibutuhkan tidak dibaca melalui database, tapi melalui json file sebagai dummy data yang akan dilampirkan bersamaan dengan Tugas Praktik ini.
+Pada Tugas Praktikum 2, kita sudah membuat beberapa fitur pada sistem Bahan Ajar
+Universitas Terbuka menggunakan Vue.js yang masih sederhana. Sekarang, tugas temanteman adalah merefaktor halaman web yang sudah dibuat menjadi custom element dalam bentuk Vue Component dan Template. Namun, tentunya ada beberapa hal yang perlu ditambahkan untuk mencapai indikator untuk penilaian hasil belajar teman-teman.
 
-Buatlah Dua Halaman Website yang perlu dikembangkan sebagai berikut:
 
-## 1. Halaman Stok Bahan Ajar
+## 1. Component Stok
 
 - Halaman ini menampilkan daftar stok bahan ajar untuk seluruh UT daerah (silakan bebas menggunakan table/list/bentuk lain yang menampilkan list data dalam jumlah banyak dan memiliki data-data field). Teman-teman mahasiswa perlu menampilkan daftar stok bahan ajar yang terdiri dari kolom data field sebagai berikut:
   - Kode Mata Kuliah/Nama Mata Kuliah → kode, judul
@@ -34,7 +35,7 @@ Buatlah Dua Halaman Website yang perlu dikembangkan sebagai berikut:
   - Memberikan status ‘Kosong’ dengan menggunakan simbol yang memberikan kesan adanya ‘bahaya’ ataupun teks berwarna merah apabila stok = 0
 - Terdapat Fitur untuk menambahkan data bahan ajar baru melalui formulir kecil dan melakukan validasi sederhana untuk setiap data field.
 
-## 2. Tracking Delivery Order (DO)
+## 2. Component Tracking
 
 - Halaman ini menampilkan halaman untuk tracking status pengiriman DO bahan ajar seperti pada Tugas Praktik 1, tetapi di sini perlu menerapkan penggunaan framework Vue.js.
 - Terdapat fitur untuk menambahkan input delivery order yang baru. Berikut adalah data field yang perlu diisi:
@@ -58,15 +59,24 @@ Buatlah Dua Halaman Website yang perlu dikembangkan sebagai berikut:
 Struktur proyek Vue.js pada Tugas Praktik ini yang disarankan adalah sebagai berikut:
 
 ```text
-/tugas2-vue-ut/
-├─ index.html ← Menampilkan navigasi menu ke 2 halaman web lain: stok.html dan tracking.html
-├─ stok.html ← Halaman 1: Stok Bahan Ajar (WAJIB)
+/tugas 3/
+├─ index.html ← ROOT
+├─ stok.html ← Compontnt 1: Stok Bahan Ajar (WAJIB)
 ├─ tracking.html ← Halaman 2: Tracking DO (WAJIB)
 ├─ css/
-│  └─ style.css ← CSS ringan (opsional)
+│  └─ style.css ← CSS ringan
+└─ data/
+│  └─ dataBahanAjar.json
 └─ js/
-   ├─ stok-app.js ← logika Vue utk stok.html
-   └─ tracking-app.js ← logika Vue utk tracking.html
+│  ├─ app.js ← logika utama
+│  └─ components ← folder js
+│     └─ notification.js
+│     └─ stock.js
+│     └─ tracking.js
+└─ templates/
+   └─ notification.html
+   └─ stok.html
+   └─ tracking.html
 ```
 
-Untuk memudahkan teman-teman mahasiswa dalam pengerjaan Tugas Praktik 2, lampiran file dummy data (file dataBahanAjar.js) yang dilampirkan bersamaan dengan file ini, menjadi template atau acuan yang yang dapat digunakan pada masing-masing file stok-app.js dan tracking-app.js
+Untuk memudahkan teman-teman mahasiswa dalam pengerjaan Tugas Praktik 3, lampiran file dummy data (file dataBahanAjar.json) yang dilampirkan bersamaan dengan file ini, menjadi template atau acuan yang dapat digunakan pada masing-masing fitur
